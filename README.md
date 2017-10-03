@@ -8,6 +8,7 @@ LED ON - washing is in progress
 LED BLINKS - washing process is over
 
 # Getting started
+
 1. Set correct name and password for your wifi AP in settings.h.  
 2. Create a telegram bot for your washing machine using BotFather telegram bot.
 3. Copy the token of your new bot from BotFather and paste it into settings.h file.
@@ -15,6 +16,7 @@ LED BLINKS - washing process is over
 5. Upload the sketch to the ESP8266 D1 Mini board.
 6. Connect to the terminal, reset the board using reset button and make sure that it connects to your wifi ap and gets ip address.
 7. Add the bot you created to your telegram accounts, and tell him /subscribe, which will add you to it's subscribers list. Now you will receive status notification from your board.
+8. You can also change the messages which your bot will send you in the same settings file.
 
 # Testing
 
