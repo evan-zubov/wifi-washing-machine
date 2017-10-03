@@ -3,9 +3,9 @@ Arduino/ESP-8266 sketch for a module reading washing machine current state and s
 
 Contolls state of the washing machine status LED, detects current state with the following logic:
 
-LED OFF - idle
-LED ON - washing is in progress
-LED BLINKS - washing process is over
+* LED OFF - idle
+* LED ON - washing is in progress
+* LED BLINKS - washing process is over
 
 # Getting started
 
