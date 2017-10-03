@@ -8,6 +8,7 @@
 #include "./setup.h";
 #include "./jsonTools.h";
 #include "./messaging.h";
+#include "./settings.h";
 
 const int WM_OFF = 0;
 const int WM_ON = 1;
@@ -34,42 +35,42 @@ void processUpdate(long updateId, String chatId, String text)
 
   if (text == "/start")
   {
-    sendMessage(chatId, "Привет!");
+    sendMessage(chatId, MESSAGES::HELLO);
   }
   if (text == "/start" || text == "/help")
   {
     Serial.print("Providing help to ");
     Serial.println(chatId);
-    sendMessage(chatId, "Доступные команды:\n/subscribe - подписаться\n/unsubscribe - отписаться\n/list - список подписчиков\n/state - проверить текущее состояние");
+    sendMessage(chatId, MESSAGES::HELP);
   }
   if (text == "/state")
   {
     if (wmState == WM_OFF)
     {
-      sendMessage(chatId, "Отдыхаю");
+      sendMessage(chatId, MESSAGES::IDLE);
     }
     if (wmState == WM_ON)
     {
-      sendMessage(chatId, "Стираю");
+      sendMessage(chatId, MESSAGES::WASHING);
     }
     if (wmState == WM_BLINKING)
     {
-      sendMessage(chatId, "Постирала, жду разгрузки");
+      sendMessage(chatId, MESSAGES::BLINKING);
     }
   }
   if (text == "/subscribe")
   {
     addChat(chatId);
-    sendMessage(chatId, "Теперь вы будете получать уведомления о ходе стирки");
+    sendMessage(chatId, MESSAGES::SUBSCRIBED);
   }
   if (text == "/unsubscribe")
   {
     removeChat(chatId);
-    sendMessage(chatId, "Вы не будете получать уведомления о ходе стирки");
+    sendMessage(chatId, MESSAGES::UNSUBSCRIBED);
   }
   if (text == "/list")
   {
-    String message = "Список подписчиков:\n";
+    String message = MESSAGES::SUBSCRIBERS;
     for (int i = 0; i < chats->size(); i++)
     {
       message += chats->get(i) + "\n";
@@ -136,15 +137,15 @@ void loop()
     String message;
     if (wmState == WM_OFF)
     {
-      message = "До новых встреч";
+      message = MESSAGES::SWITCHED_TO_IDLE;
     }
     if (wmState == WM_ON)
     {
-      message = "Начинаю стирать";
+      message = MESSAGES::SWITCHED_TO_WASHING;
     }
     if (wmState == WM_BLINKING)
     {
-      message = "Стирка закончена!";
+      message = MESSAGES::SWITCHED_TO_WASH_IS_OVER;
     }
     notifyUsers(message);
     wmOldState = wmState;
