@@ -1,6 +1,5 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
-#include <ArduinoJson.h>
 #include <LinkedList.h>
 #include "user_interface.h"
 #include "FS.h"
@@ -15,11 +14,13 @@ const int WM_ON = 1;
 const int WM_BLINKING = 2;
 const int WM_BLINK_DURATION = 20;
 
+const int LOOP_DELAY = 100;
+const int UPDATE_INTERVAL = 5000;
+
 bool oldState = false;
 int wmState = WM_OFF;
 int wmOldState = WM_OFF;
 int sameValueCycles = 0;
-int getUpdateInterval = 50; //10s
 int getUpdateCounter = 0;
 
 unsigned long lastUpdateId = 0;
@@ -27,12 +28,13 @@ unsigned long lastUpdateId = 0;
 void processUpdate(long updateId, String chatId, String text)
 {
   Serial.println("");
+  Serial.print("UpdateId:");
+  Serial.println(updateId);
   Serial.print("Chat:");
   Serial.println(chatId);
   Serial.print("Text:");
   Serial.println(text);
   lastUpdateId = updateId + 1;
-
   if (text == "/start")
   {
     sendMessage(chatId, MESSAGES::HELLO);
@@ -81,7 +83,7 @@ void processUpdate(long updateId, String chatId, String text)
 
 void getUpdates()
 {
-  String url = "/getUpdates?offset=" + String(lastUpdateId);
+  String url = "/getUpdates?limit=1&offset=" + String(lastUpdateId);
   Serial.println("GET:" + url);
   TeleResponse response = getRequest(url);
   if (response.success)
@@ -105,8 +107,10 @@ void getUpdates()
 void loop()
 {
   getUpdateCounter++;
-  if (getUpdateCounter == getUpdateInterval)
+  Serial.print(".");
+  if (getUpdateCounter == (UPDATE_INTERVAL / LOOP_DELAY))
   {
+    Serial.println();
     getUpdateCounter = 0;
     digitalWrite(LED_BUILTIN, HIGH);
     getUpdates();
@@ -151,5 +155,5 @@ void loop()
     wmOldState = wmState;
   }
 
-  delay(100);
+  delay(LOOP_DELAY);
 }

@@ -38,6 +38,7 @@ TeleResponse httpRequest(String type, String url, String body)
   } else {
     client.print("Connection: close\r\n\r\n");
   }
+
   while (client.connected())
   {
     String line = client.readStringUntil('\n');
@@ -45,8 +46,7 @@ TeleResponse httpRequest(String type, String url, String body)
     {
       break;
     }
-  }
-
+  }  
   response.body = client.readString();
   client.stop();
   response.body.replace("\n", "");
